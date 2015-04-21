@@ -1,5 +1,5 @@
 {
-    "name": "deesoft/biz3-core",
+    "name": "deesoft/biz3-api",
     "description": "Sangkilbiz api",
     "keywords": ["core", "erp", "api"],
     "type": "yii2-extension",
@@ -27,7 +27,7 @@
         }
     },
     "extra": {
-        "bootstrap": "biz\\core\\Bootstrap",
+        "bootstrap": "biz\\api\\Bootstrap",
         "branch-alias": {
             "dev-master": "3.0.x-dev"
         }
