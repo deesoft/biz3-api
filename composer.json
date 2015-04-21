@@ -1,0 +1,35 @@
+{
+    "name": "deesoft/biz3-core",
+    "description": "Sangkilbiz api",
+    "keywords": ["core", "erp", "api"],
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/deesoft/biz3-api/issues",
+        "source": "https://github.com/deesoft/biz3-api"
+    },
+    "authors": [
+        {
+            "name": "Misbahul Munir",
+            "email": "misbahuldmunir@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "~2.0",
+        "mdmsoft/yii2-autonumber": "~1.0",
+        "mdmsoft/yii2-format-converter": "~1.0",
+        "mdmsoft/yii2-ar-behaviors": "~1.0",
+        "deesoft/yii2-rest": "~1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "biz\\api\\": ""
+        }
+    },
+    "extra": {
+        "bootstrap": "biz\\core\\Bootstrap",
+        "branch-alias": {
+            "dev-master": "3.0.x-dev"
+        }
+    }
+}
