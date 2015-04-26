@@ -15,10 +15,16 @@ use yii\helpers\ArrayHelper;
  */
 class Purchase extends \yii\base\Behavior
 {
+    public $types = [100,];
 
+    /**
+     * @inheritdoc
+     */
     public function events()
     {
         return [
+            'eMovementCreate' => 'movementCreate',
+            'eMovementUpdate' => 'movementUpdate',
             'eMovementApply' => 'movementChangeStatus',
             'eMovementReject' => 'movementChangeStatus',
         ];
@@ -33,10 +39,7 @@ class Purchase extends \yii\base\Behavior
     {
         /* @var $model MGoodsMovement */
         $model = $event->params[0];
-        /*
-         * 100 = Purchase
-         */
-        if (!in_array($model->reff_type, [100])) {
+        if (!in_array($model->reff_type, $this->types)) {
             return;
         }
         $factor = $event->name == 'eMovementApply' ? 1 : -1;
@@ -49,6 +52,51 @@ class Purchase extends \yii\base\Behavior
             $purcDtl = $purchaseItems[$detail->product_id];
             $purcDtl->total_receive += $factor * $detail->qty;
             $purcDtl->save(false);
+        }
+    }
+
+    /**
+     * Handler for Good Movement created.
+     * It used to update stock
+     * @param \biz\api\base\Event $event
+     */
+    public function movementCreate($event)
+    {
+        /* @var $model MGoodsMovement */
+        $model = $event->params[0];
+        if (!in_array($model->reff_type, $this->types)) {
+            return;
+        }
+
+        $purchase = MPurchase::findOne($model->reff_id);
+        $this->applyAvaliableMovement($model, $purchase);
+    }
+
+    /**
+     * Handler for Good Movement Update.
+     * It used to update stock
+     * @param \biz\api\base\Event $event
+     */
+    public function movementUpdate($event)
+    {
+        /* @var $model MGoodsMovement */
+        $model = $event->params[0];
+        if (!in_array($model->reff_type, $this->types)) {
+            return;
+        }
+
+        $purchase = MPurchase::findOne($model->reff_id);
+        $this->applyAvaliableMovement($model, $purchase);
+    }
+
+    protected function applyAvaliableMovement($model, $purchase)
+    {
+        $purchaseItems = ArrayHelper::index($purchase->items, 'product_id');
+        // change total qty for reff document
+        /* @var $purcDtl \biz\api\models\purchase\PurchaseDtl */
+        foreach ($model->items as $detail) {
+            $purcDtl = $purchaseItems[$detail->product_id];
+            $detail->avaliable = $purcDtl->qty - $purcDtl->total_receive;
         }
     }
 }

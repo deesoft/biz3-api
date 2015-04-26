@@ -1,37 +1,19 @@
 <?php
 
-namespace biz\api\controllers\purchase;
-
-use Yii;
-use biz\api\base\Controller;
-use biz\api\models\purchase\Purchase as MPurchase;
+namespace biz\api\base;
 
 /**
- * Description of PurchaseController
+ * Description of StatusPatchTrait
  *
- * @property ApiPurchase $api
- * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
- * @since 3.0
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>
+ * @since 1.0
  */
-class PurchaseController extends Controller
+trait StatusPatchTrait
 {
-    /**
-     * @inheritdoc
-     */
-    public $modelClass = 'biz\api\models\purchase\Purchase';
-
-    /**
-     * @inheritdoc
-     */
-    public $prefixEventName = 'ePurchase';
-
     /**
      * @var array
      */
-    protected $patchingStatus = [
-        [MPurchase::STATUS_DRAFT, MPurchase::STATUS_PROCESS, 'process'],
-        [MPurchase::STATUS_PROCESS, MPurchase::STATUS_DRAFT, 'reject'],
-    ];
+    public $patchingStatus = [];
 
     /**
      * @inheritdoc
@@ -48,7 +30,7 @@ class PurchaseController extends Controller
      */
     public function ePatch($event)
     {
-        /* @var $model MPurchase */
+        /* @var $model \yii\db\ActiveRecord */
         $model = $event->params[0];
         $dirty = $model->getDirtyAttributes();
         $olds = $model->getOldAttributes();
