@@ -19,7 +19,7 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class UserToBranch extends \yii\db\ActiveRecord
+class UserToBranch extends \biz\api\base\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -70,8 +70,8 @@ class UserToBranch extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return[
-            'BizTimestampBehavior',
-            'BizBlameableBehavior'
+            'yii\behaviors\TimestampBehavior',
+            'yii\behaviors\BlameableBehavior'
         ];
     }
 }

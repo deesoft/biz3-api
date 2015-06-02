@@ -25,7 +25,7 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class Sales extends \yii\db\ActiveRecord
+class Sales extends \biz\api\base\ActiveRecord
 {
     // status sales
     const STATUS_DRAFT = 10;
@@ -90,15 +90,15 @@ class Sales extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return[
-            'BizTimestampBehavior',
-            'BizBlameableBehavior',
+            'yii\behaviors\TimestampBehavior',
+            'yii\behaviors\BlameableBehavior',
             [
                 'class' => 'mdm\autonumber\Behavior',
                 'digit' => 6,
                 'attribute' => 'number',
                 'value' => 'SA' . date('y.?')
             ],
-            'BizStatusConverter',
+            'biz\api\base\StatusConverter',
             'mdm\behaviors\ar\RelationBehavior',
         ];
     }

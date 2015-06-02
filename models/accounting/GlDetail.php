@@ -14,11 +14,11 @@ use Yii;
  *
  * @property GlHeader $header
  * @property Coa $coa
- * 
- * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ *
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @since 3.0
  */
-class GlDetail extends \yii\db\ActiveRecord
+class GlDetail extends \biz\api\base\ActiveRecord
 {
     /**
      * @inheritdoc

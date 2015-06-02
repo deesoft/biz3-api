@@ -20,7 +20,7 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class Orgn extends \yii\db\ActiveRecord
+class Orgn extends \biz\api\base\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -74,8 +74,8 @@ class Orgn extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return[
-            'BizTimestampBehavior',
-            'BizBlameableBehavior'
+            'yii\behaviors\TimestampBehavior',
+            'yii\behaviors\BlameableBehavior'
         ];
     }
 }

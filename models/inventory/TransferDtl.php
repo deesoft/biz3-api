@@ -19,8 +19,9 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class TransferDtl extends \yii\db\ActiveRecord
+class TransferDtl extends \biz\api\base\ActiveRecord
 {
+
     /**
      * @inheritdoc
      */
@@ -56,7 +57,6 @@ class TransferDtl extends \yii\db\ActiveRecord
         ];
     }
 
-
     /**
      * Set default value for GR detail
      * @param \biz\api\models\inventory\GoodsMovementDtl $model
@@ -76,6 +76,7 @@ class TransferDtl extends \yii\db\ActiveRecord
         $model->avaliable = $this->total_release - $this->total_receive;
         $model->uom_id = $this->uom_id;
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */

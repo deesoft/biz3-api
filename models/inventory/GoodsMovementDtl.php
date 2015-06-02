@@ -19,7 +19,7 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class GoodsMovementDtl extends \yii\db\ActiveRecord
+class GoodsMovementDtl extends \biz\api\base\ActiveRecord
 {
     /**
      * @var double 

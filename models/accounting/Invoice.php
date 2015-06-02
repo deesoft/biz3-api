@@ -30,7 +30,7 @@ use biz\api\base\Configs;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class Invoice extends \yii\db\ActiveRecord
+class Invoice extends \biz\api\base\ActiveRecord
 {
     const TYPE_OUTGOING = 10; // 
     const TYPE_INCOMING = 20;
@@ -147,15 +147,15 @@ class Invoice extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return[
-            'BizTimestampBehavior',
-            'BizBlameableBehavior',
+            'yii\behaviors\TimestampBehavior',
+            'yii\behaviors\BlameableBehavior',
             [
                 'class' => 'mdm\autonumber\Behavior',
                 'digit' => 6,
                 'attribute' => 'number',
                 'value' => 'AI' . date('y.?')
             ],
-            'BizStatusConverter',
+            'biz\api\base\StatusConverter',
             'mdm\behaviors\ar\RelationBehavior',
         ];
     }

@@ -22,7 +22,7 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class SalesDtl extends \yii\db\ActiveRecord
+class SalesDtl extends \biz\api\base\ActiveRecord
 {
 
     /**

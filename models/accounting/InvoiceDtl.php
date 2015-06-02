@@ -18,7 +18,7 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class InvoiceDtl extends \yii\db\ActiveRecord
+class InvoiceDtl extends \biz\api\base\ActiveRecord
 {
     /**
      * @inheritdoc

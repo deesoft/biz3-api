@@ -18,7 +18,7 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class StockAdjustmentDtl extends \yii\db\ActiveRecord
+class StockAdjustmentDtl extends \biz\api\base\ActiveRecord
 {
     /**
      * @inheritdoc

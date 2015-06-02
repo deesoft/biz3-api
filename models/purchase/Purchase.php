@@ -3,10 +3,14 @@
 namespace biz\api\models\purchase;
 
 use Yii;
+use biz\api\base\ActiveRecord;
+use biz\api\models\master\Branch;
+use biz\api\models\master\Supplier;
+use biz\api\models\inventory\GoodsMovement;
 
 /**
- * This is the model class for table "{{%purchase}}".
- *
+ * Description of Purchase
+ * 
  * @property integer $id
  * @property string $number
  * @property integer $supplier_id
@@ -21,11 +25,10 @@ use Yii;
  * @property integer $updated_by
  *
  * @property PurchaseDtl[] $items
- * 
- * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
- * @since 3.0
+ * @property GoodsMovement[] $movements
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  */
-class Purchase extends \yii\db\ActiveRecord
+class Purchase extends ActiveRecord
 {
     const STATUS_DRAFT = 10;
     const STATUS_PROCESS = 20;
@@ -45,19 +48,14 @@ class Purchase extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['supplier_id', 'branch_id', 'date', 'items'], 'required'],
-            [['supplier_id', 'branch_id', 'status', 'created_by', 'updated_by'], 'integer'],
             [['status'], 'default', 'value' => self::STATUS_DRAFT],
-            [['date', 'created_at', 'updated_at'], 'safe'],
+            [['supplier_id', 'branch_id', 'date', 'items'], 'required'],
+            [['supplier_id', 'branch_id', 'status'], 'integer'],
+            [['status'], 'in', 'range' => [self::STATUS_DRAFT, self::STATUS_PROCESS, self::STATUS_CLOSE]],
+            [['date'], 'safe'],
             [['discount'], 'number'],
             [['number'], 'string', 'max' => 16],
-            [['items'], 'calcDetails'],
         ];
-    }
-
-    public function calcDetails()
-    {
-        
     }
 
     /**
@@ -81,30 +79,57 @@ class Purchase extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getItems()
     {
         return $this->hasMany(PurchaseDtl::className(), ['purchase_id' => 'id']);
     }
 
-    /**
-     * @inheritdoc
-     */
+    public function getMovements()
+    {
+        return $this->hasMany(GoodsMovement::className(), ['reff_id' => 'id'])
+                ->onCondition(['reff_type' => 100]);
+    }
+
+    public function getSupplier()
+    {
+        return $this->hasOne(Supplier::className(), ['id' => 'supplier_id']);
+    }
+
+    public function getBranch()
+    {
+        return $this->hasOne(Branch::className(), ['id' => 'branch_id']);
+    }
+
     public function behaviors()
     {
         return[
-            'BizTimestampBehavior',
-            'BizBlameableBehavior',
+            'yii\behaviors\TimestampBehavior',
+            'yii\behaviors\BlameableBehavior',
             [
                 'class' => 'mdm\autonumber\Behavior',
                 'digit' => 6,
                 'attribute' => 'number',
                 'value' => 'PU' . date('y.?')
             ],
-            'BizStatusConverter',
+            'biz\api\base\StatusConverter',
             'mdm\behaviors\ar\RelationBehavior',
+        ];
+    }
+
+    public function fields()
+    {
+        $fields = parent::fields();
+        $fields['nmStatus'] = 'nmStatus';
+        return $fields;
+    }
+
+    public function extraFields()
+    {
+        return[
+            'items',
+            'supplier',
+            'branch',
+            'movements'
         ];
     }
 }

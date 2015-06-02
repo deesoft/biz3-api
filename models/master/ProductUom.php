@@ -21,7 +21,7 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class ProductUom extends \yii\db\ActiveRecord
+class ProductUom extends \biz\api\base\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -81,8 +81,8 @@ class ProductUom extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return[
-            'BizTimestampBehavior',
-            'BizBlameableBehavior'
+            'yii\behaviors\TimestampBehavior',
+            'yii\behaviors\BlameableBehavior'
         ];
     }
 }

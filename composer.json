@@ -27,7 +27,6 @@
         }
     },
     "extra": {
-        "bootstrap": "biz\\api\\Bootstrap",
         "branch-alias": {
             "dev-master": "3.0.x-dev"
         }

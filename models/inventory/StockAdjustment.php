@@ -24,7 +24,7 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class StockAdjustment extends \yii\db\ActiveRecord
+class StockAdjustment extends \biz\api\base\ActiveRecord
 {
     const STATUS_DRAFT = 10;
     const STATUS_APPLIED = 20;
@@ -85,15 +85,15 @@ class StockAdjustment extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return[
-            'BizTimestampBehavior',
-            'BizBlameableBehavior',
+            'yii\behaviors\TimestampBehavior',
+            'yii\behaviors\BlameableBehavior',
             [
                 'class' => 'mdm\autonumber\Behavior',
                 'digit' => 6,
                 'attribute' => 'number',
                 'value' => 'IA' . date('y.?')
             ],
-            'BizStatusConverter',
+            'biz\api\base\StatusConverter',
             'mdm\behaviors\ar\RelationBehavior',
         ];
     }}

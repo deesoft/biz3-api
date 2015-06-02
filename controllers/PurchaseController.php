@@ -1,19 +1,19 @@
 <?php
 
-namespace biz\api\controllers\purchase;
+namespace biz\api\controllers;
 
 use Yii;
-use biz\api\base\Controller;
+use biz\api\base\AdvanceController;
 use biz\api\models\purchase\Purchase as MPurchase;
 
 /**
  * Description of PurchaseController
  *
  * @property ApiPurchase $api
- * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @since 3.0
  */
-class PurchaseController extends Controller
+class PurchaseController extends AdvanceController
 {
     /**
      * @inheritdoc
@@ -25,6 +25,9 @@ class PurchaseController extends Controller
      */
     public $prefixEventName = 'ePurchase';
 
+    public $extraPatterns = [
+        'GET,HEAD {id}{attribute}' => 'viewDetail',
+    ];
     /**
      * @var array
      */
@@ -32,16 +35,6 @@ class PurchaseController extends Controller
         [MPurchase::STATUS_DRAFT, MPurchase::STATUS_PROCESS, 'process'],
         [MPurchase::STATUS_PROCESS, MPurchase::STATUS_DRAFT, 'reject'],
     ];
-
-    /**
-     * @inheritdoc
-     */
-    public function events()
-    {
-        return[
-            'patch' => 'ePatch',
-        ];
-    }
 
     /**
      * @param \dee\base\Event $event

@@ -15,7 +15,7 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class ProductStockHistory extends \yii\db\ActiveRecord
+class ProductStockHistory extends \biz\api\base\ActiveRecord
 {
     /**
      * @inheritdoc

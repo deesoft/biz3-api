@@ -2,9 +2,15 @@
 
 namespace biz\api\models\purchase;
 
-use Yii;
+use biz\api\base\ActiveRecord;
+use yii\helpers\ArrayHelper;
+use biz\api\models\master\Uom;
+use biz\api\models\master\Product;
+use biz\api\models\master\ProductUom;
 
 /**
+ * PurchaseDtl
+ *
  * This is the model class for table "{{%purchase_dtl}}".
  *
  * @property integer $purchase_id
@@ -14,14 +20,23 @@ use Yii;
  * @property double $price
  * @property double $discount
  * @property double $total_receive
+ * @property double $avaliable
  *
  * @property Purchase $purchase
+ * @property Product $product
+ * @property ProductUom[] $productUoms
+ * @property ProductUom $productUom
+ * @property Uom[] $uoms Uom of product
+ * @property Purchase $purchase
+ * @property array $uomList
+ * @property Uom $uom Uom transaction
  * 
- * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
- * @since 3.0
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>
+ * @since 1.0
  */
-class PurchaseDtl extends \yii\db\ActiveRecord
+class PurchaseDtl extends ActiveRecord
 {
+
     /**
      * @inheritdoc
      */
@@ -59,21 +74,42 @@ class PurchaseDtl extends \yii\db\ActiveRecord
     }
 
     /**
-     * Set default value for GR detail
-     * @param \biz\api\models\inventory\GoodsMovementDtl $model
-     */
-    public function applyGR($model)
-    {
-        $model->avaliable = $this->qty - $this->total_receive;
-        $model->item_value = $model->trans_value = $this->price;
-        $model->uom_id = $this->uom_id;
-    }
-
-    /**
      * @return \yii\db\ActiveQuery
      */
     public function getPurchase()
     {
         return $this->hasOne(Purchase::className(), ['id' => 'purchase_id']);
+    }
+    private $_uomList;
+
+    public function getUomList()
+    {
+        if ($this->_uomList === null) {
+            $this->_uomList = ArrayHelper::map($this->uoms, 'id', 'name');
+        }
+        return $this->_uomList;
+    }
+
+    public function getProduct()
+    {
+        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+    }
+
+    public function getUom()
+    {
+        return $this->hasOne(Uom::className(), ['id' => 'uom_id']);
+    }
+
+    public function getAvaliable()
+    {
+        return $this->qty - $this->total_receive;
+    }
+
+    public function extraFields()
+    {
+        return[
+            'product',
+            'uom'
+        ];
     }
 }

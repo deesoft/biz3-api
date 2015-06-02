@@ -3,6 +3,7 @@
 namespace biz\api\models\accounting;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%coa}}".
@@ -22,12 +23,13 @@ use Yii;
  * @property Coa $parent
  * @property Coa[] $coas
  * @property EntriSheetDtl[] $entriSheetDtls
- * 
- * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ *
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @since 3.0
  */
-class Coa extends \yii\db\ActiveRecord
+class Coa extends \biz\api\base\ActiveRecord
 {
+
     /**
      * @inheritdoc
      */
@@ -70,6 +72,11 @@ class Coa extends \yii\db\ActiveRecord
         ];
     }
 
+    public static function selectGroup()
+    {
+        return ArrayHelper::map(static::find()->where('code::INT % 100000 = 0')->asArray()->all(), 'code', 'name');
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -85,8 +92,8 @@ class Coa extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Coa::className(), ['id' => 'parent_id']);
     }
-    
-     /**
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getGroup()
@@ -109,16 +116,15 @@ class Coa extends \yii\db\ActiveRecord
     {
         return $this->hasMany(EntriSheetDtl::className(), ['coa_id' => 'id']);
     }
-    
+
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
         return[
-            'BizTimestampBehavior',
-            'BizBlameableBehavior',
+            'yii\behaviors\TimestampBehavior',
+            'yii\behaviors\BlameableBehavior',
         ];
     }
-    
 }

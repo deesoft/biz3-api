@@ -1,18 +1,19 @@
 <?php
 
-namespace biz\api\controllers\inventory;
+namespace biz\api\controllers;
 
 use Yii;
-use biz\api\base\Controller;
-use biz\api\models\inventory\GoodsMovement as MGoodsMovement;
+use biz\api\base\AdvanceController;
+use biz\api\models\inventory\GoodsMovement as MMovement;
 
 /**
- * Description of MovementController
+ * Description of PurchaseController
  *
- * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ * @property ApiPurchase $api
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @since 3.0
  */
-class MovementController extends Controller
+class MovementController extends AdvanceController
 {
     /**
      * @inheritdoc
@@ -24,31 +25,24 @@ class MovementController extends Controller
      */
     public $prefixEventName = 'eMovement';
 
+    public $extraPatterns = [
+        'GET,HEAD {id}{attribute}' => 'viewDetail',
+    ];
+    
     /**
-     * @var array 
+     * @var array
      */
     protected $patchingStatus = [
-        [MGoodsMovement::STATUS_DRAFT, MGoodsMovement::STATUS_APPLIED, 'apply'],
-        [MGoodsMovement::STATUS_APPLIED, MGoodsMovement::STATUS_DRAFT, 'reject'],
+        [MMovement::STATUS_DRAFT, MMovement::STATUS_APPLIED, 'apply'],
+        [MMovement::STATUS_APPLIED, MMovement::STATUS_DRAFT, 'reject'],
     ];
 
     /**
-     * @inheritdoc
-     */
-    public function events()
-    {
-        return[
-            'patch' => 'ePatch'
-        ];
-    }
-
-    /**
-     *
-     * @param \biz\api\base\Event $event
+     * @param \dee\base\Event $event
      */
     public function ePatch($event)
     {
-        /* @var $model MGoodsMovement */
+        /* @var $model MMovement */
         $model = $event->params[0];
         $dirty = $model->getDirtyAttributes();
         $olds = $model->getOldAttributes();

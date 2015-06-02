@@ -18,16 +18,16 @@ use Yii;
  * @property integer $updated_by
  *
  * @property GlHeader[] $glHeaders
- * 
- * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ *
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @since 3.0
  */
-class AccPeriode extends \yii\db\ActiveRecord
+class AccPeriode extends \biz\api\base\ActiveRecord
 {
     const STATUS_DRAFT = 0;
     const STATUS_ACTIVE = 1;
     const STATUS_CLOSE = 2;
-    
+
     /**
      * @inheritdoc
      */
@@ -81,8 +81,8 @@ class AccPeriode extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return[
-            'BizTimestampBehavior',
-            'BizBlameableBehavior',
+            'yii\behaviors\TimestampBehavior',
+            'yii\behaviors\BlameableBehavior',
             [
                 'class' => 'mdm\converter\DateConverter',
                 'attributes' => [
@@ -90,7 +90,7 @@ class AccPeriode extends \yii\db\ActiveRecord
                     'DateTo' => 'date_to'
                 ]
             ],
-            'BizStatusConverter',
+            'biz\api\base\StatusConverter',
         ];
     }
 }

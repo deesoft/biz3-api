@@ -3,7 +3,8 @@
 namespace biz\api\models\inventory;
 
 use Yii;
-use biz\api\base\Configs;
+use biz\api\base\ActiveRecord;
+use biz\api\models\master\Warehouse;
 
 /**
  * This is the model class for table "{{%goods_movement}}".
@@ -24,8 +25,8 @@ use biz\api\base\Configs;
  * @property string $updated_at
  * @property integer $updated_by
  * 
- * @property \yii\db\ActiveRecord $reffDoc
- * @property \yii\db\ActiveRecord[] $reffDocDtls
+ * @property ActiveRecord $reffDoc
+ * @property ActiveRecord[] $reffDocDtls
  * @property GoodsMovementDtl[] $items
  * @property string $reffLink
  * 
@@ -34,7 +35,7 @@ use biz\api\base\Configs;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class GoodsMovement extends \yii\db\ActiveRecord
+class GoodsMovement extends ActiveRecord
 {
     // status GoodsMovement
     const STATUS_DRAFT = 10;
@@ -103,80 +104,43 @@ class GoodsMovement extends \yii\db\ActiveRecord
         return $this->hasMany(GoodsMovementDtl::className(), ['movement_id' => 'id']);
     }
 
-    /**
-     * Get reference configuration
-     * @param type $reff_type
-     * @return null
-     */
-    public static function reffConfig($reff_type)
+    public function getWarehouse()
     {
-        return Configs::movement($reff_type);
+        return $this->hasOne(Warehouse::className(), ['id'=>'warehouse_id']);
     }
-
-    public function getReffConfig()
-    {
-        return Configs::movement($this->reff_type);
-    }
-
-    /**
-     * Set type of document depending reference document
-     */
-    public function resolveType()
-    {
-        if (($config = Configs::movement($this->reff_type)) !== null) {
-            $this->type = $config['type'];
-        } else {
-            $this->addError('reff_type', "Reference type {$this->reff_type} not recognize");
-        }
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getReffDoc()
-    {
-        if (($config = $this->reffConfig) && isset($config['class'])) {
-            return $this->hasOne($config['class'], ['id' => 'reff_id']);
-        }
-        return null;
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getReffDocDtls()
-    {
-        if (($reff = $this->reffDoc) !== null) {
-            $config = $this->reffConfig;
-            $relation = $reff->getRelation($config['relation']);
-            return $this->hasMany($relation->modelClass, $relation->link)
-                    ->via('reffDoc')
-                    ->indexBy('product_id');
-        }
-        return null;
-    }
-
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
         return[
-            'BizTimestampBehavior',
-            'BizBlameableBehavior',
+            'yii\behaviors\TimestampBehavior',
+            'yii\behaviors\BlameableBehavior',
             [
                 'class' => 'mdm\autonumber\Behavior',
                 'digit' => 6,
                 'attribute' => 'number',
                 'value' => 'IM' . date('ymd.?')
             ],
-            'BizStatusConverter',
+            'biz\api\base\StatusConverter',
             [
                 'class' => 'mdm\behaviors\ar\RelationBehavior',
-                'beforeRSave' => function($child) {
-                return !empty($child->qty);
-            }
             ],
+        ];
+    }
+
+    public function fields()
+    {
+        $fields = parent::fields();
+        $fields['nmStatus'] = 'nmStatus';
+        return $fields;
+    }
+
+    public function extraFields()
+    {
+        return[
+            'items',
+            'warehouse',
         ];
     }
 }

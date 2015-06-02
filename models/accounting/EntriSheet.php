@@ -15,11 +15,11 @@ use Yii;
  * @property integer $updated_by
  *
  * @property EntriSheetDtl[] $entriSheetDtls
- * 
- * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
+ *
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @since 3.0
  */
-class EntriSheet extends \yii\db\ActiveRecord
+class EntriSheet extends \biz\api\base\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -65,15 +65,15 @@ class EntriSheet extends \yii\db\ActiveRecord
     {
         return $this->hasMany(EntriSheetDtl::className(), ['esheet_id' => 'id']);
     }
-    
+
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
         return[
-            'BizTimestampBehavior',
-            'BizBlameableBehavior',
+            'yii\behaviors\TimestampBehavior',
+            'yii\behaviors\BlameableBehavior',
         ];
     }
 }

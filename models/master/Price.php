@@ -21,7 +21,7 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class Price extends \yii\db\ActiveRecord {
+class Price extends \biz\api\base\ActiveRecord {
 
     /**
      * @inheritdoc
@@ -77,8 +77,8 @@ class Price extends \yii\db\ActiveRecord {
      */
     public function behaviors() {
         return[
-            'BizTimestampBehavior',
-            'BizBlameableBehavior'
+            'yii\behaviors\TimestampBehavior',
+            'yii\behaviors\BlameableBehavior'
         ];
     }
 

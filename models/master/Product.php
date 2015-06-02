@@ -34,7 +34,7 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class Product extends \yii\db\ActiveRecord
+class Product extends \biz\api\base\ActiveRecord
 {
     const STATUS_ACTIVE = 10;
     const STATUS_INACTIVE = 20;
@@ -183,9 +183,9 @@ class Product extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return[
-            'BizTimestampBehavior',
-            'BizBlameableBehavior',
-            'BizStatusConverter',
+            'yii\behaviors\TimestampBehavior',
+            'yii\behaviors\BlameableBehavior',
+            'biz\api\base\StatusConverter',
         ];
     }
 }

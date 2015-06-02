@@ -17,7 +17,7 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class PaymentDtl extends \yii\db\ActiveRecord
+class PaymentDtl extends \biz\api\base\ActiveRecord
 {
     /**
      * @inheritdoc
