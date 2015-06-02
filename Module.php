@@ -43,6 +43,8 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
     {
         if ($app instanceof \yii\web\Application) {
             $app->getUrlManager()->addRules($this->getUrlRules(), false);
+            $jsFile = Yii::getAlias('@biz/client/assets/js/master.app.js');
+            $app->getAssetManager()->assetMap[$jsFile] = $app->getUrlManager()->createAbsoluteUrl([$this->uniqueId . '/master']);
         }
     }
 
@@ -58,7 +60,7 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
                 'extraPatterns' => [
                     '{id}/{attr}',
                 ],
-                'prefixRoute' => $this->id,
+                'prefixRoute' => $this->uniqueId,
                 'prefix' => 'api',
                 'actions' => [
                     'purchase' => 'purchase/index',
