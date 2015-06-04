@@ -53,9 +53,19 @@ class Purchase extends ActiveRecord
             [['supplier_id', 'branch_id', 'status'], 'integer'],
             [['status'], 'in', 'range' => [self::STATUS_DRAFT, self::STATUS_PROCESS, self::STATUS_CLOSE]],
             [['date'], 'safe'],
-            [['discount'], 'number'],
+            [['items'],'resolveValue'],
+            [['discount', 'value'], 'number'],
             [['number'], 'string', 'max' => 16],
         ];
+    }
+
+    public function resolveValue()
+    {
+        $value = 0.0;
+        foreach ($this->items as $item) {
+            $value += $item->qty * $item->price;
+        }
+        $this->value = $value;
     }
 
     /**

@@ -23,10 +23,10 @@ class Purchase extends \yii\base\Behavior
     public function events()
     {
         return [
-            'eMovementCreate' => 'movementCreate',
-            'eMovementUpdate' => 'movementUpdate',
-            'eMovementApply' => 'movementChangeStatus',
-            'eMovementReject' => 'movementChangeStatus',
+            'eMovementApply' => 'movementApply',
+            'eMovementReject' => 'movementReject',
+            'eMovementApplied' => 'movementApplied',
+            'eMovementRejected' => 'movementRejected',
         ];
     }
 
@@ -35,14 +35,13 @@ class Purchase extends \yii\base\Behavior
      * It used to update stock
      * @param \dee\base\Event $event
      */
-    public function movementChangeStatus($event)
+    public function movementApply($event)
     {
         /* @var $model MGoodsMovement */
         $model = $event->params[0];
         if (!in_array($model->reff_type, $this->types)) {
             return;
         }
-        $factor = $event->name == 'eMovementApply' ? 1 : -1;
 
         $purchase = MPurchase::findOne($model->reff_id);
         $purchaseItems = ArrayHelper::index($purchase->items, 'product_id');
@@ -50,7 +49,32 @@ class Purchase extends \yii\base\Behavior
         /* @var $purcDtl \biz\api\models\purchase\PurchaseDtl */
         foreach ($model->items as $detail) {
             $purcDtl = $purchaseItems[$detail->product_id];
-            $purcDtl->total_receive += $factor * $detail->qty;
+            // set qty avaliable for GR
+            $detail->avaliable = $purcDtl->qty - $purcDtl->total_receive;
+        }
+    }
+
+    /**
+     * Handler for Good Movement created.
+     * It used to update stock
+     * @param \dee\base\Event $event
+     */
+    public function movementApplied($event)
+    {
+        /* @var $model MGoodsMovement */
+        $model = $event->params[0];
+        if (!in_array($model->reff_type, $this->types)) {
+            return;
+        }
+
+        $purchase = MPurchase::findOne($model->reff_id);
+        $purchaseItems = ArrayHelper::index($purchase->items, 'product_id');
+        // change total qty for reff document
+        /* @var $purcDtl \biz\api\models\purchase\PurchaseDtl */
+        foreach ($model->items as $detail) {
+            $purcDtl = $purchaseItems[$detail->product_id];
+
+            $purcDtl->total_receive += $detail->qty;
             $purcDtl->save(false);
         }
     }
@@ -60,7 +84,7 @@ class Purchase extends \yii\base\Behavior
      * It used to update stock
      * @param \dee\base\Event $event
      */
-    public function movementCreate($event)
+    public function movementReject($event)
     {
         /* @var $model MGoodsMovement */
         $model = $event->params[0];
@@ -68,16 +92,15 @@ class Purchase extends \yii\base\Behavior
             return;
         }
 
-        $purchase = MPurchase::findOne($model->reff_id);
-        $this->applyAvaliableMovement($model, $purchase);
+        //$purchase = MPurchase::findOne($model->reff_id);
     }
 
     /**
-     * Handler for Good Movement Update.
+     * Handler for Good Movement created.
      * It used to update stock
      * @param \dee\base\Event $event
      */
-    public function movementUpdate($event)
+    public function movementRejected($event)
     {
         /* @var $model MGoodsMovement */
         $model = $event->params[0];
@@ -86,17 +109,15 @@ class Purchase extends \yii\base\Behavior
         }
 
         $purchase = MPurchase::findOne($model->reff_id);
-        $this->applyAvaliableMovement($model, $purchase);
-    }
-
-    protected function applyAvaliableMovement($model, $purchase)
-    {
         $purchaseItems = ArrayHelper::index($purchase->items, 'product_id');
         // change total qty for reff document
         /* @var $purcDtl \biz\api\models\purchase\PurchaseDtl */
         foreach ($model->items as $detail) {
             $purcDtl = $purchaseItems[$detail->product_id];
-            $detail->avaliable = $purcDtl->qty - $purcDtl->total_receive;
+
+            $purcDtl->total_receive -= $detail->qty;
+            $purcDtl->save(false);
         }
     }
+
 }

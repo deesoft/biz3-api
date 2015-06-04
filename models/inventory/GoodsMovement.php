@@ -66,11 +66,6 @@ class GoodsMovement extends ActiveRecord
             [['number'], 'string', 'max' => 16],
             [['trans_value', 'total_invoiced'], 'number'],
             [['description'], 'string', 'max' => 255],
-            [['reff_id'], 'unique', 'targetAttribute' => ['reff_id', 'reff_type', 'status'],
-                'when' => function($obj) {
-                return $obj->status == self::STATUS_DRAFT && $obj->reff_type != null;
-            }
-            ],
         ];
     }
 

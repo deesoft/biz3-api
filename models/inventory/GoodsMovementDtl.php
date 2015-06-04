@@ -45,7 +45,7 @@ class GoodsMovementDtl extends \biz\api\base\ActiveRecord
             [['qty', 'item_value', 'trans_value', 'avaliable'], 'number'],
             [['qty'], 'compare', 'compareAttribute' => 'avaliable', 'operator' => '<=',
                 'when' => function($obj) {
-                return $obj->avaliable !== null && $obj->avaliable !== '';
+                return $obj->movement->status == GoodsMovement::STATUS_APPLIED && $obj->avaliable !== null && $obj->avaliable !== '';
             }],
         ];
     }

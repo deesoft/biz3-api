@@ -15,6 +15,8 @@ use biz\api\models\master\Supplier;
 use biz\api\models\master\ProductSupplier;
 use biz\api\models\master\ProductStock;
 use biz\api\models\accounting\Coa;
+use biz\api\models\master\Branch;
+use biz\api\models\master\Warehouse;
 
 /**
  * Description of MasterController
@@ -122,7 +124,16 @@ class MasterController extends \yii\web\Controller
         }
         $result['product_stock'] = $prod_stock;
 
+        // branch
+        $result['branchs'] = Branch::find()->asArray()->all();
 
+        // warehouse
+        $warehouses = Warehouse::find()->asArray()->all();
+        $result['warehouses'] = [];
+        foreach ($warehouses as $warehouse) {
+            $result['warehouses'][$warehouse->branch_id][] = $warehouse;
+        }
+        
         // coa
         $result['coa'] = Coa::find()
                 ->select(['id', 'cd' => 'code', 'text' => 'name', 'label' => 'name'])

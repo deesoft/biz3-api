@@ -15,11 +15,18 @@ use yii\helpers\ArrayHelper;
  */
 class Sales extends \yii\base\Behavior
 {
+    public $types = [200,];
 
+    /**
+     * @inheritdoc
+     */
     public function events()
     {
         return [
-            'e_good-movement_applied' => 'goodsMovementApplied',
+            'eMovementApply' => 'movementApply',
+            'eMovementReject' => 'movementReject',
+            'eMovementApplied' => 'movementApplied',
+            'eMovementRejected' => 'movementRejected',
         ];
     }
 
@@ -28,39 +35,88 @@ class Sales extends \yii\base\Behavior
      * It used to update stock
      * @param \dee\base\Event $event
      */
-    public function goodsMovementApplied($event)
+    public function movementApply($event)
     {
         /* @var $model MGoodsMovement */
         $model = $event->params[0];
-        /*
-         * 200 = Sales
-         */
-        if (!in_array($model->reff_type, [200])) {
+        if (!in_array($model->reff_type, $this->types)) {
             return;
         }
 
         $sales = MSales::findOne($model->reff_id);
-        $salesDtls = ArrayHelper::index($sales->salesDtls, 'product_id');
+        $salesItems = ArrayHelper::index($sales->items, 'product_id');
         // change total qty for reff document
-        /* @var $purcDtl \biz\api\models\sales\SalesDtl */
-        foreach ($model->goodsMovementDtls as $detail) {
-            $salesDtl = $salesDtls[$detail->product_id];
+        /* @var $salesDtl \biz\api\models\sales\SalesDtl */
+        foreach ($model->items as $detail) {
+            $salesDtl = $salesItems[$detail->product_id];
+            // set qty avaliable for GR
+            $detail->avaliable = $salesDtl->qty - $salesDtl->total_release;
+        }
+    }
+
+    /**
+     * Handler for Good Movement created.
+     * It used to update stock
+     * @param \dee\base\Event $event
+     */
+    public function movementApplied($event)
+    {
+        /* @var $model MGoodsMovement */
+        $model = $event->params[0];
+        if (!in_array($model->reff_type, $this->types)) {
+            return;
+        }
+
+        $sales = MSales::findOne($model->reff_id);
+        $salesItems = ArrayHelper::index($sales->items, 'product_id');
+        // change total qty for reff document
+        /* @var $salesDtl \biz\api\models\sales\SalesDtl */
+        foreach ($model->items as $detail) {
+            $salesDtl = $salesItems[$detail->product_id];
+
             $salesDtl->total_release += $detail->qty;
             $salesDtl->save(false);
         }
-        $complete = true;
-        foreach ($salesDtls as $salesDtl) {
-            if ($salesDtl->total_release != $salesDtl->qty) {
-                $complete = false;
-                break;
-            }
+    }
+
+    /**
+     * Handler for Good Movement created.
+     * It used to update stock
+     * @param \dee\base\Event $event
+     */
+    public function movementReject($event)
+    {
+        /* @var $model MGoodsMovement */
+        $model = $event->params[0];
+        if (!in_array($model->reff_type, $this->types)) {
+            return;
         }
-        if ($complete) {
-            $sales->status = MSales::STATUS_COMPLETE_RELEASE;
-            $sales->save(false);
-        }  elseif($sales->status == MSales::STATUS_DRAFT) {
-            $sales->status = MSales::STATUS_PARTIAL_RELEASE;
-            $sales->save(false);
+
+        //$sales = MSales::findOne($model->reff_id);
+    }
+
+    /**
+     * Handler for Good Movement created.
+     * It used to update stock
+     * @param \dee\base\Event $event
+     */
+    public function movementRejected($event)
+    {
+        /* @var $model MGoodsMovement */
+        $model = $event->params[0];
+        if (!in_array($model->reff_type, $this->types)) {
+            return;
+        }
+
+        $sales = MSales::findOne($model->reff_id);
+        $salesItems = ArrayHelper::index($sales->items, 'product_id');
+        // change total qty for reff document
+        /* @var $salesDtl \biz\api\models\sales\SalesDtl */
+        foreach ($model->items as $detail) {
+            $salesDtl = $salesItems[$detail->product_id];
+
+            $salesDtl->total_release -= $detail->qty;
+            $salesDtl->save(false);
         }
     }
 }

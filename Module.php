@@ -43,7 +43,8 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
     {
         if ($app instanceof \yii\web\Application) {
             $app->getUrlManager()->addRules($this->getUrlRules(), false);
-            $jsFile = Yii::getAlias('@biz/client/assets/js/master.app.js');
+            
+            $jsFile = Yii::getAlias('@biz/client/assets/js/master.app.js', false);
             $app->getAssetManager()->assetMap[$jsFile] = $app->getUrlManager()->createAbsoluteUrl([$this->uniqueId . '/master']);
         }
     }
