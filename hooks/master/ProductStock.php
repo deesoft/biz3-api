@@ -20,8 +20,8 @@ class ProductStock extends \yii\base\Behavior
     public function events()
     {
         return [
-            'eMovementApply' => 'movementChangeStatus',
-            'eMovementReject' => 'movementChangeStatus',
+            'eMovementApplied' => 'movementChangeStatus',
+            'eMovementRejected' => 'movementChangeStatus',
         ];
     }
 
@@ -123,7 +123,7 @@ class ProductStock extends \yii\base\Behavior
         /* @var $model MGoodsMovement */
         $model = $event->params[0];
         $warehouse_id = $model->warehouse_id;
-        $factor = $event->name == 'eMovementApply' ? 1 : -1;
+        $factor = $event->name == 'eMovementApplied' ? 1 : -1;
         foreach ($model->items as $item) {
             $params = [
                 'warehouse_id' => $warehouse_id,

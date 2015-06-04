@@ -3,6 +3,10 @@
 namespace biz\api\models\sales;
 
 use Yii;
+use biz\api\base\ActiveRecord;
+use biz\api\models\master\Branch;
+use biz\api\models\master\Customer;
+use biz\api\models\inventory\GoodsMovement;
 
 /**
  * This is the model class for table "{{%sales}}".
@@ -20,12 +24,12 @@ use Yii;
  * @property string $updated_at
  * @property integer $updated_by
  *
- * @property SalesDtl[] $salesDtls
+ * @property SalesDtl[] $items
  * 
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class Sales extends \biz\api\base\ActiveRecord
+class Sales extends ActiveRecord
 {
     // status sales
     const STATUS_DRAFT = 10;
@@ -46,13 +50,22 @@ class Sales extends \biz\api\base\ActiveRecord
     public function rules()
     {
         return [
-            [['branch_id', 'date', 'value'], 'required'],
-            [['branch_id', 'customer_id', 'status', 'created_by', 'updated_by'], 'integer'],
             [['status'], 'default', 'value' => static::STATUS_DRAFT],
-            [['date', 'created_at', 'updated_at'], 'safe'],
+            [['items'],'resolveValue'],
+            [['branch_id', 'date', 'value', 'items'], 'required'],
+            [['branch_id', 'customer_id', 'status', 'created_by', 'updated_by'], 'integer'],
             [['value', 'discount'], 'number'],
             [['number'], 'string', 'max' => 16]
         ];
+    }
+
+    public function resolveValue()
+    {
+        $value = 0.0;
+        foreach ($this->items as $item) {
+            $value += $item->qty * $item->price;
+        }
+        $this->value = $value;
     }
 
     /**
@@ -79,9 +92,25 @@ class Sales extends \biz\api\base\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSalesDtls()
+    public function getItems()
     {
         return $this->hasMany(SalesDtl::className(), ['sales_id' => 'id']);
+    }
+
+    public function getMovements()
+    {
+        return $this->hasMany(GoodsMovement::className(), ['reff_id' => 'id'])
+                ->onCondition(['reff_type' => 200]);
+    }
+
+    public function getCustomer()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'supplier_id']);
+    }
+
+    public function getBranch()
+    {
+        return $this->hasOne(Branch::className(), ['id' => 'branch_id']);
     }
 
     /**
@@ -100,6 +129,23 @@ class Sales extends \biz\api\base\ActiveRecord
             ],
             'biz\api\base\StatusConverter',
             'mdm\behaviors\ar\RelationBehavior',
+        ];
+    }
+
+    public function fields()
+    {
+        $fields = parent::fields();
+        $fields['nmStatus'] = 'nmStatus';
+        return $fields;
+    }
+
+    public function extraFields()
+    {
+        return[
+            'items',
+            'customer',
+            'branch',
+            'movements'
         ];
     }
 }

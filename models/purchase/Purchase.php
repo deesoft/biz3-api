@@ -49,11 +49,10 @@ class Purchase extends ActiveRecord
     {
         return [
             [['status'], 'default', 'value' => self::STATUS_DRAFT],
-            [['supplier_id', 'branch_id', 'date', 'items'], 'required'],
+            [['items'],'resolveValue'],
+            [['supplier_id', 'branch_id', 'date', 'value', 'items'], 'required'],
             [['supplier_id', 'branch_id', 'status'], 'integer'],
             [['status'], 'in', 'range' => [self::STATUS_DRAFT, self::STATUS_PROCESS, self::STATUS_CLOSE]],
-            [['date'], 'safe'],
-            [['items'],'resolveValue'],
             [['discount', 'value'], 'number'],
             [['number'], 'string', 'max' => 16],
         ];
