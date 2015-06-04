@@ -8,6 +8,7 @@ use app\models\LoginForm;
 
 /**
  * Site controller
+ * Just test commit
  */
 class SiteController extends Controller
 {
