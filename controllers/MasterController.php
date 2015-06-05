@@ -131,7 +131,7 @@ class MasterController extends \yii\web\Controller
         $warehouses = Warehouse::find()->asArray()->all();
         $result['warehouses'] = [];
         foreach ($warehouses as $warehouse) {
-            $result['warehouses'][$warehouse->branch_id][] = $warehouse;
+            $result['warehouses'][$warehouse['branch_id']][] = $warehouse;
         }
         
         // coa
