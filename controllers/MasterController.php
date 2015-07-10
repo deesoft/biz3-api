@@ -22,7 +22,7 @@ use biz\api\models\master\Warehouse;
  * Description of MasterController
  *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
- * @since 1.0
+ * @since 3.0
  */
 class MasterController extends \yii\web\Controller
 {
@@ -64,11 +64,11 @@ class MasterController extends \yii\web\Controller
         // barcodes
         $barcodes = [];
         $query_barcode = ProductChild::find()
-            ->select(['barcode' => 'lower(barcode)', 'id' => 'product_id'])
-            ->union(Product::find()->select(['lower(code)', 'id']))
+            ->select(['barcode', 'id' => 'product_id'])
+            ->union(Product::find()->select(['code', 'id']))
             ->asArray();
         foreach ($query_barcode->all() as $row) {
-            $barcodes[$row['barcode']] = $row['id'];
+            $barcodes[strtoupper($row['barcode'])] = $row['id'];
         }
         $result['barcodes'] = $barcodes;
 
