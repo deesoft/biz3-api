@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "yiisoft/yii2": "~2.0",
+        "yiisoft/yii2": "~2.0.4",
         "mdmsoft/yii2-autonumber": "~1.0",
         "mdmsoft/yii2-format-converter": "~1.0",
         "mdmsoft/yii2-ar-behaviors": "~1.0",
@@ -28,7 +28,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.0.x-dev"
+            "dev-master": "3.x-dev"
         }
     }
 }

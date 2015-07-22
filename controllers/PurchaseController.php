@@ -36,6 +36,11 @@ class PurchaseController extends AdvanceController
         [MPurchase::STATUS_PROCESS, MPurchase::STATUS_DRAFT, 'reject', 'rejected'],
     ];
 
+    public function actionViewItems($id)
+    {
+        return parent::viewDetail($id, 'items');
+    }
+
     /**
      * @param \dee\base\Event $event
      */

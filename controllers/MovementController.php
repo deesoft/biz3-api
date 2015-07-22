@@ -24,9 +24,6 @@ class MovementController extends AdvanceController
      * @inheritdoc
      */
     public $prefixEventName = 'eMovement';
-    public $extraPatterns = [
-        'GET,HEAD {id}{attribute}' => 'viewDetail',
-    ];
 
     /**
      * @var array
@@ -35,6 +32,11 @@ class MovementController extends AdvanceController
         [MMovement::STATUS_DRAFT, MMovement::STATUS_APPLIED, 'apply', 'applied'],
         [MMovement::STATUS_APPLIED, MMovement::STATUS_DRAFT, 'reject', 'rejected'],
     ];
+
+    public function actionViewItems($id)
+    {
+        return parent::viewDetail($id, 'items');
+    }
 
     /**
      * @param \dee\base\Event $event
