@@ -3,6 +3,9 @@
 namespace biz\api\models\inventory;
 
 use Yii;
+use biz\api\base\ActiveRecord;
+use biz\api\models\master\Uom;
+use biz\api\models\master\Product;
 
 /**
  * This is the model class for table "{{%goods_movement_dtl}}".
@@ -19,12 +22,8 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class GoodsMovementDtl extends \biz\api\base\ActiveRecord
+class GoodsMovementDtl extends ActiveRecord
 {
-    /**
-     * @var double 
-     */
-    public $avaliable;
 
     /**
      * @inheritdoc
@@ -42,11 +41,7 @@ class GoodsMovementDtl extends \biz\api\base\ActiveRecord
         return [
             [['product_id', 'uom_id', 'qty'], 'required',],
             [['movement_id', 'product_id', 'uom_id'], 'integer'],
-            [['qty', 'item_value', 'trans_value', 'avaliable'], 'number'],
-            [['qty'], 'compare', 'compareAttribute' => 'avaliable', 'operator' => '<=',
-                'when' => function($obj) {
-                return $obj->movement->status == GoodsMovement::STATUS_APPLIED && $obj->avaliable !== null && $obj->avaliable !== '';
-            }],
+            [['qty', 'item_value', 'trans_value'], 'number'],
         ];
     }
 
@@ -70,5 +65,23 @@ class GoodsMovementDtl extends \biz\api\base\ActiveRecord
     public function getMovement()
     {
         return $this->hasOne(GoodsMovement::className(), ['id' => 'movement_id']);
+    }
+
+    public function getProduct()
+    {
+        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+    }
+
+    public function getUom()
+    {
+        return $this->hasOne(Uom::className(), ['id' => 'uom_id']);
+    }
+
+    public function extraFields()
+    {
+        return[
+            'product',
+            'uom'
+        ];
     }
 }

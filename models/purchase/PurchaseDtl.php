@@ -109,7 +109,8 @@ class PurchaseDtl extends ActiveRecord
     {
         return[
             'product',
-            'uom'
+            'uom',
+            'avaliable'
         ];
     }
 }

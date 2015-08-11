@@ -3,6 +3,10 @@
 namespace biz\api\models\inventory;
 
 use Yii;
+use biz\api\base\ActiveRecord;
+use biz\api\models\master\Product;
+use biz\api\models\master\Uom;
+
 
 /**
  * This is the model class for table "{{%transfer_dtl}}".
@@ -19,7 +23,7 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class TransferDtl extends \biz\api\base\ActiveRecord
+class TransferDtl extends ActiveRecord
 {
 
     /**
@@ -83,5 +87,35 @@ class TransferDtl extends \biz\api\base\ActiveRecord
     public function getTransfer()
     {
         return $this->hasOne(Transfer::className(), ['id' => 'transfer_id']);
+    }
+
+    public function getProduct()
+    {
+        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+    }
+
+    public function getUom()
+    {
+        return $this->hasOne(Uom::className(), ['id' => 'uom_id']);
+    }
+
+    public function getAvaliable()
+    {
+        return $this->qty - $this->total_release;
+    }
+
+    public function getAvaliable2()
+    {
+        return $this->total_release - $this->total_receive;
+    }
+
+    public function extraFields()
+    {
+        return[
+            'product',
+            'uom',
+            'avaliable',
+            'avaliable2'
+        ];
     }
 }

@@ -3,6 +3,9 @@
 namespace biz\api\models\inventory;
 
 use Yii;
+use biz\api\base\ActiveRecord;
+use biz\api\models\master\Branch;
+
 
 /**
  * This is the model class for table "{{%transfer}}".
@@ -18,12 +21,12 @@ use Yii;
  * @property string $updated_at
  * @property integer $updated_by
  *
- * @property TransferDtl[] $transferDtls
+ * @property TransferDtl[] $items
  * 
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class Transfer extends \biz\api\base\ActiveRecord
+class Transfer extends ActiveRecord
 {
     const STATUS_DRAFT = 10;
     const STATUS_PROCESS = 20;
@@ -43,7 +46,7 @@ class Transfer extends \biz\api\base\ActiveRecord
     public function rules()
     {
         return [
-            [['branch_id', 'branch_dest_id', 'date', 'transferDtls'], 'required'],
+            [['branch_id', 'branch_dest_id', 'date', 'items'], 'required'],
             [['status'], 'default', 'value' => static::STATUS_DRAFT],
             [['branch_id', 'branch_dest_id', 'status', 'created_by', 'updated_by'], 'integer'],
             [['date', 'created_at', 'updated_at'], 'safe'],
@@ -73,9 +76,25 @@ class Transfer extends \biz\api\base\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTransferDtls()
+    public function getItems()
     {
         return $this->hasMany(TransferDtl::className(), ['transfer_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBranch()
+    {
+        return $this->hasOne(Branch::className(), ['id'=>'branch_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBranchDest()
+    {
+        return $this->hasOne(Branch::className(), ['id'=>'branch_dest_id']);
     }
 
     /**

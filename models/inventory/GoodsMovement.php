@@ -5,6 +5,7 @@ namespace biz\api\models\inventory;
 use Yii;
 use biz\api\base\ActiveRecord;
 use biz\api\models\master\Warehouse;
+use biz\api\models\master\Branch;
 
 /**
  * This is the model class for table "{{%goods_movement}}".
@@ -25,10 +26,9 @@ use biz\api\models\master\Warehouse;
  * @property string $updated_at
  * @property integer $updated_by
  * 
- * @property ActiveRecord $reffDoc
- * @property ActiveRecord[] $reffDocDtls
  * @property GoodsMovementDtl[] $items
- * @property string $reffLink
+ * @property Branch $branch
+ * @property Warehouse $warehouse
  * 
  * @property array $reffConfig
  * 
@@ -103,6 +103,12 @@ class GoodsMovement extends ActiveRecord
     {
         return $this->hasOne(Warehouse::className(), ['id'=>'warehouse_id']);
     }
+
+    public function getBranch()
+    {
+        return $this->hasOne(Branch::className(), ['id'=>'branch_id'])->via('warehouse');
+    }
+
     /**
      * @inheritdoc
      */
@@ -136,6 +142,7 @@ class GoodsMovement extends ActiveRecord
         return[
             'items',
             'warehouse',
+            'branch',
         ];
     }
 }
