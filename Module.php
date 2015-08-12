@@ -12,6 +12,8 @@ use Yii;
 /**
  * Description of Module
  *
+ * @property array $mvConfig
+ * 
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @since 1.0
  */
@@ -58,9 +60,6 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
                 'class' => 'dee\rest\UrlRule',
                 'prefix' => $this->prefixUrlRule,
                 'prefixRoute' => $this->uniqueId,
-                'extraPatterns' => [
-                    'GET {id}/items' => 'view-items'
-                ],
                 'controller' => [
                     'purchase' => 'purchase',
                     'movement' => 'movement',
@@ -68,5 +67,26 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
                 ]
             ],
         ];
+    }
+
+    private $_mvConfig;
+    public function getMvConfig()
+    {
+        if($this->_mvConfig === null){
+            $this->_mvConfig = require (__DIR__.'/config/movement.php');
+        }
+        return $this->_mvConfig;
+    }
+
+    public function setMvConfig($values)
+    {
+        $this->getMvConfig();
+        foreach ($values as $key => $value) {
+            if(isset($this->_mvConfig[$key])){
+                $this->_mvConfig[$key] = array_merge($this->_mvConfig[$key], $value);
+            }  else {
+                $this->_mvConfig[$key] = $value;
+            }
+        }
     }
 }

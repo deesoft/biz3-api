@@ -30,8 +30,6 @@ use biz\api\models\master\Branch;
  * @property Branch $branch
  * @property Warehouse $warehouse
  * 
- * @property array $reffConfig
- * 
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
@@ -101,12 +99,31 @@ class GoodsMovement extends ActiveRecord
 
     public function getWarehouse()
     {
-        return $this->hasOne(Warehouse::className(), ['id'=>'warehouse_id']);
+        return $this->hasOne(Warehouse::className(), ['id' => 'warehouse_id']);
     }
 
     public function getBranch()
     {
-        return $this->hasOne(Branch::className(), ['id'=>'branch_id'])->via('warehouse');
+        return $this->hasOne(Branch::className(), ['id' => 'branch_id'])->via('warehouse');
+    }
+
+    public function getBranch_id()
+    {
+        if ($this->warehouse) {
+            return $this->warehouse->branch_id;
+        }
+    }
+
+    public function getReference()
+    {
+        if ($this->reff_type === null) {
+            return null;
+        }
+        $config = Yii::$app->controller->module->mvConfig;
+        if (isset($config[$this->reff_type])) {
+            $class = $config[$this->reff_type]['model'];
+            return $this->hasOne($class, ['id' => 'reff_id']);
+        }
     }
 
     /**
@@ -134,6 +151,7 @@ class GoodsMovement extends ActiveRecord
     {
         $fields = parent::fields();
         $fields['nmStatus'] = 'nmStatus';
+        $fields['branch_id'] = 'branch_id';
         return $fields;
     }
 
@@ -143,6 +161,7 @@ class GoodsMovement extends ActiveRecord
             'items',
             'warehouse',
             'branch',
+            'reference',
         ];
     }
 }

@@ -133,7 +133,9 @@ class MasterController extends \yii\web\Controller
         foreach ($warehouses as $warehouse) {
             $result['warehouses'][$warehouse['branch_id']][] = $warehouse;
         }
-        
+
+        //apicode
+        $result['mvconfig'] = $this->module->mvConfig;
         // coa
         $result['coa'] = Coa::find()
                 ->select(['id', 'cd' => 'code', 'text' => 'name', 'label' => 'name'])
