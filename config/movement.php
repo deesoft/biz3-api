@@ -6,6 +6,7 @@ return [
         'type' => 10,
         'field' => ['qty','total_receive'],
         'model' => 'biz\api\models\purchase\Purchase',
+        'value_field' => 'price'
     ],
     200 => [
         'name' => 'Sales',

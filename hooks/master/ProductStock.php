@@ -124,6 +124,7 @@ class ProductStock extends \yii\base\Behavior
         $model = $event->params[0];
         $warehouse_id = $model->warehouse_id;
         $factor = $event->name == 'eMovementApplied' ? 1 : -1;
+        $factor *= $model->type == MGoodsMovement::TYPE_RECEIVE ? 1 : -1;
         foreach ($model->items as $item) {
             $params = [
                 'warehouse_id' => $warehouse_id,

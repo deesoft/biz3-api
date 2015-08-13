@@ -20,7 +20,7 @@ class GoodsMovement extends GoodsMovementModel
     {
         return [
             [['id', 'type', 'reff_type', 'reff_id', 'status', 'created_by', 'updated_by','warehouse_id'], 'integer'],
-            [['number', 'Date', 'date', 'description', 'created_at', 'updated_at'], 'safe'],
+            [['number', 'date', 'description', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -52,12 +52,6 @@ class GoodsMovement extends GoodsMovementModel
         if (!$this->validate()) {
             $query->where('1=0');
             return $dataProvider;
-        }
-        $reff_types = [
-            'purchase' => 100,
-        ];
-        if(isset($params['reff']) && isset($reff_types[$params['reff']])){
-            $this->reff_type = $reff_types[$params['reff']];
         }
 
         $query->andFilterWhere([

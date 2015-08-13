@@ -43,14 +43,18 @@ class Purchase extends \yii\base\Behavior
             return;
         }
 
-        $purchase = MPurchase::findOne($model->reff_id);
+        /* @var $model MPurchase */
+        $purchase = $model->reference;
         $purchaseItems = ArrayHelper::index($purchase->items, 'product_id');
+        
         // change total qty for reff document
         /* @var $purcDtl \biz\api\models\purchase\PurchaseDtl */
         foreach ($model->items as $detail) {
             $purcDtl = $purchaseItems[$detail->product_id];
             // set qty avaliable for GR
-            $detail->avaliable = $purcDtl->qty - $purcDtl->total_receive;
+            if($detail->qty > $purcDtl->qty - $purcDtl->total_receive){
+                throw new \yii\base\UserException('GR lebih besar dari qty');
+            }
         }
     }
 
@@ -67,7 +71,8 @@ class Purchase extends \yii\base\Behavior
             return;
         }
 
-        $purchase = MPurchase::findOne($model->reff_id);
+        /* @var $model MPurchase */
+        $purchase = $model->reference;
         $purchaseItems = ArrayHelper::index($purchase->items, 'product_id');
         // change total qty for reff document
         /* @var $purcDtl \biz\api\models\purchase\PurchaseDtl */
@@ -91,7 +96,6 @@ class Purchase extends \yii\base\Behavior
         if (!in_array($model->reff_type, $this->types)) {
             return;
         }
-
         //$purchase = MPurchase::findOne($model->reff_id);
     }
 
@@ -108,7 +112,8 @@ class Purchase extends \yii\base\Behavior
             return;
         }
 
-        $purchase = MPurchase::findOne($model->reff_id);
+        /* @var $model MPurchase */
+        $purchase = $model->reference;
         $purchaseItems = ArrayHelper::index($purchase->items, 'product_id');
         // change total qty for reff document
         /* @var $purcDtl \biz\api\models\purchase\PurchaseDtl */

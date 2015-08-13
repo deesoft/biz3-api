@@ -19,6 +19,7 @@ class MovementController extends AdvanceController
      * @inheritdoc
      */
     public $modelClass = 'biz\api\models\inventory\GoodsMovement';
+    public $modelSearchClass = 'biz\api\models\inventory\searchs\GoodsMovement';
 
     /**
      * @inheritdoc
@@ -32,11 +33,6 @@ class MovementController extends AdvanceController
         [MMovement::STATUS_DRAFT, MMovement::STATUS_APPLIED, 'apply', 'applied'],
         [MMovement::STATUS_APPLIED, MMovement::STATUS_DRAFT, 'reject', 'rejected'],
     ];
-
-    public function actionViewItems($id)
-    {
-        return parent::viewDetail($id, 'items');
-    }
 
     /**
      * @param \dee\base\Event $event

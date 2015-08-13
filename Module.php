@@ -55,17 +55,21 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 
     protected function getUrlRules()
     {
+        $prefix = $this->prefixUrlRule;
+        $prefixRoute = $this->uniqueId;
         return[
             [
                 'class' => 'dee\rest\UrlRule',
-                'prefix' => $this->prefixUrlRule,
-                'prefixRoute' => $this->uniqueId,
+                'prefix' => $prefix,
+                'prefixRoute' => $prefixRoute,
                 'controller' => [
                     'purchase' => 'purchase',
                     'movement' => 'movement',
                     'sales' => 'sales',
                 ]
             ],
+//            "{$prefix}/<reff:\w+>/movement" => "{$prefixRoute}/movement/index",
+//            "{$prefix}/<reff:\w+>/<reff_id:\d+>/movement" => "{$prefixRoute}/movement/index",
         ];
     }
 
