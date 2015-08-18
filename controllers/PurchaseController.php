@@ -19,14 +19,12 @@ class PurchaseController extends AdvanceController
      * @inheritdoc
      */
     public $modelClass = 'biz\api\models\purchase\Purchase';
+    public $modelSearchClass = 'biz\api\models\purchase\searchs\Purchase';
 
     /**
      * @inheritdoc
      */
     public $prefixEventName = 'ePurchase';
-    public $extraPatterns = [
-        'GET,HEAD {id}{attribute}' => 'viewDetail',
-    ];
 
     /**
      * @var array
@@ -35,11 +33,6 @@ class PurchaseController extends AdvanceController
         [MPurchase::STATUS_DRAFT, MPurchase::STATUS_PROCESS, 'process', 'processed'],
         [MPurchase::STATUS_PROCESS, MPurchase::STATUS_DRAFT, 'reject', 'rejected'],
     ];
-
-    public function actionViewItems($id)
-    {
-        return parent::viewDetail($id, 'items');
-    }
 
     /**
      * @param \dee\base\Event $event

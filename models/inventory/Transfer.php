@@ -97,6 +97,18 @@ class Transfer extends ActiveRecord
         return $this->hasOne(Branch::className(), ['id'=>'branch_dest_id']);
     }
 
+    public function getIssues()
+    {
+        return $this->hasMany(GoodsMovement::className(), ['reff_id' => 'id'])
+                ->onCondition(['reff_type' => 300]);
+    }
+
+    public function getReceives()
+    {
+        return $this->hasMany(GoodsMovement::className(), ['reff_id' => 'id'])
+                ->onCondition(['reff_type' => 400]);
+    }
+
     /**
      * @inheritdoc
      */
@@ -113,6 +125,24 @@ class Transfer extends ActiveRecord
             ],
             'biz\api\base\StatusConverter',
             'mdm\behaviors\ar\RelationBehavior',
+        ];
+    }
+
+    public function fields()
+    {
+        $fields = parent::fields();
+        $fields['nmStatus'] = 'nmStatus';
+        return $fields;
+    }
+
+    public function extraFields()
+    {
+        return[
+            'items',
+            'branch',
+            'branchDest',
+            'issues',
+            'receives',
         ];
     }
 }

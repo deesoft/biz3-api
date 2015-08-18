@@ -19,7 +19,6 @@ use Yii;
  */
 class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 {
-
     public $prefixUrlRule = 'api';
 
     /**
@@ -66,18 +65,17 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
                     'purchase' => 'purchase',
                     'movement' => 'movement',
                     'sales' => 'sales',
+                    'transfer' => 'transfer'
                 ]
             ],
-//            "{$prefix}/<reff:\w+>/movement" => "{$prefixRoute}/movement/index",
-//            "{$prefix}/<reff:\w+>/<reff_id:\d+>/movement" => "{$prefixRoute}/movement/index",
         ];
     }
-
     private $_mvConfig;
+
     public function getMvConfig()
     {
-        if($this->_mvConfig === null){
-            $this->_mvConfig = require (__DIR__.'/config/movement.php');
+        if ($this->_mvConfig === null) {
+            $this->_mvConfig = require (__DIR__ . '/config/movement.php');
         }
         return $this->_mvConfig;
     }
@@ -86,9 +84,9 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
     {
         $this->getMvConfig();
         foreach ($values as $key => $value) {
-            if(isset($this->_mvConfig[$key])){
+            if (isset($this->_mvConfig[$key])) {
                 $this->_mvConfig[$key] = array_merge($this->_mvConfig[$key], $value);
-            }  else {
+            } else {
                 $this->_mvConfig[$key] = $value;
             }
         }

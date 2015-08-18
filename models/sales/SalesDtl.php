@@ -3,6 +3,9 @@
 namespace biz\api\models\sales;
 
 use Yii;
+use biz\api\base\ActiveRecord;
+use biz\api\models\master\Uom;
+use biz\api\models\master\Product;
 
 /**
  * This is the model class for table "{{%sales_dtl}}".
@@ -18,11 +21,13 @@ use Yii;
  * @property double $tax
  *
  * @property Sales $sales
+ * @property Product $product
+ * @property Uom $uom Uom transaction
  * 
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>  
  * @since 3.0
  */
-class SalesDtl extends \biz\api\base\ActiveRecord
+class SalesDtl extends ActiveRecord
 {
 
     /**
@@ -43,18 +48,6 @@ class SalesDtl extends \biz\api\base\ActiveRecord
             [['sales_id', 'product_id', 'uom_id'], 'integer'],
             [['qty', 'price', 'cogs', 'discount', 'tax'], 'number'],
         ];
-    }
-
-    /**
-     * Set default value for GI detail
-     * @param \biz\api\models\inventory\GoodsMovementDtl $model
-     */
-    public function applyGI($model)
-    {
-        $model->avaliable = $this->qty - $this->total_release;
-        $model->item_value = $this->cogs;
-        $model->trans_value = $this->price;
-        $model->uom_id = $this->uom_id;
     }
 
     /**
@@ -81,5 +74,23 @@ class SalesDtl extends \biz\api\base\ActiveRecord
     public function getSales()
     {
         return $this->hasOne(Sales::className(), ['id' => 'sales_id']);
+    }
+
+    public function getProduct()
+    {
+        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+    }
+
+    public function getUom()
+    {
+        return $this->hasOne(Uom::className(), ['id' => 'uom_id']);
+    }
+
+    public function extraFields()
+    {
+        return[
+            'product',
+            'uom',
+        ];
     }
 }

@@ -4,33 +4,34 @@ namespace biz\api\controllers;
 
 use Yii;
 use biz\api\base\AdvanceController;
-use biz\api\models\sales\Sales as MSales;
+use biz\api\models\inventory\Transfer as MTransfer;
 
 /**
- * Description of SalesController
+ * Description of PurchaseController
  *
+ * @property ApiPurchase $api
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @since 3.0
  */
-class SalesController extends AdvanceController
+class TransferController extends AdvanceController
 {
     /**
      * @inheritdoc
      */
-    public $modelClass = 'biz\api\models\sales\Sales';
-    public $modelSearchClass = 'biz\api\models\sales\searchs\Sales';
+    public $modelClass = 'biz\api\models\inventory\Transfer';
+    public $modelSearchClass = 'biz\api\models\inventory\searchs\Transfer';
 
     /**
      * @inheritdoc
      */
-    public $prefixEventName = 'eSales';
+    public $prefixEventName = 'eTransfer';
 
     /**
      * @var array
      */
     protected $patchingStatus = [
-        [MSales::STATUS_DRAFT, MSales::STATUS_PROCESS, 'process', 'processed'],
-        [MSales::STATUS_PROCESS, MSales::STATUS_DRAFT, 'reject', 'rejected'],
+        [MTransfer::STATUS_DRAFT, MTransfer::STATUS_PROCESS, 'process', 'processed'],
+        [MTransfer::STATUS_PROCESS, MTransfer::STATUS_DRAFT, 'reject', 'rejected'],
     ];
 
     /**
@@ -38,7 +39,7 @@ class SalesController extends AdvanceController
      */
     public function ePatch($event)
     {
-        /* @var $model MSales */
+        /* @var $model MTransfer */
         list($model, $dirty, $olds) = $event->params;
         // status changed
         if (isset($dirty['status'])) {
@@ -55,7 +56,7 @@ class SalesController extends AdvanceController
      */
     public function ePatched($event)
     {
-        /* @var $model MSales */
+        /* @var $model MPurchase */
         list($model, $dirty, $olds) = $event->params;
         // status changed
         if (isset($dirty['status'])) {

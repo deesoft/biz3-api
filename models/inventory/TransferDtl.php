@@ -62,26 +62,6 @@ class TransferDtl extends ActiveRecord
     }
 
     /**
-     * Set default value for GR detail
-     * @param \biz\api\models\inventory\GoodsMovementDtl $model
-     */
-    public function applyGI($model)
-    {
-        $model->avaliable = $this->qty - $this->total_release;
-        $model->uom_id = $this->uom_id;
-    }
-
-    /**
-     * Set default value for GR detail
-     * @param \biz\api\models\inventory\GoodsMovementDtl $model
-     */
-    public function applyGR($model)
-    {
-        $model->avaliable = $this->total_release - $this->total_receive;
-        $model->uom_id = $this->uom_id;
-    }
-
-    /**
      * @return \yii\db\ActiveQuery
      */
     public function getTransfer()
@@ -99,23 +79,11 @@ class TransferDtl extends ActiveRecord
         return $this->hasOne(Uom::className(), ['id' => 'uom_id']);
     }
 
-    public function getAvaliable()
-    {
-        return $this->qty - $this->total_release;
-    }
-
-    public function getAvaliable2()
-    {
-        return $this->total_release - $this->total_receive;
-    }
-
     public function extraFields()
     {
         return[
             'product',
             'uom',
-            'avaliable',
-            'avaliable2'
         ];
     }
 }

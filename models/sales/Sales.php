@@ -105,7 +105,7 @@ class Sales extends ActiveRecord
 
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'supplier_id']);
+        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 
     public function getBranch()
